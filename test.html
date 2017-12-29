@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>P4</title>
+	<style type="text/css">
+		table tr td{
+			width: 72px;
+			height: 72px;
+			border:1px solid black;
+		}
+	</style>
+	<script type="text/javascript">
+	var T= new Array(6);
+	for(var i=0;i<6;i++) T[i] = new Array(7);
+	function Graphics(){
+	 var ch="<table id='tab'>";
+	 for(var i=0;i<6;i++) {
+	 ch+="<tr>";
+	  for(var j=0;j<7;j++) ch+="<td id='c"+i+""+j+"' onclick='gamer("+j+")'>&nbsp;</td>";
+	 ch+="</tr>";
+	 }
+	 ch+="</table>";
+	 return ch;
+		}
+		function initialize(){
+			for(var i=0;i<6;i++){
+				for(var j=0;j<7;j++) T[i][j]=0;
+			}
+		document.getElementById('id1').innerHTML = Graphics();
+		}
+		function gamer(x){
+			var line = getLine(x);
+			T[line][x]="1";
+			document.getElementById('c'+line+""+x).innerHTML = "<img src='red.png'>";
+			if (winner(line,x)==1) alert("you are winner");
+			else{
+				if (equals(line,x)==true) alert("Egalité");
+				else{
+					var colCPU = CPU();
+					var lineCPU = getLine(colCPU);
+					T[lineCPU][colCPU]="2";
+					document.getElementById('c'+lineCPU+""+colCPU).innerHTML="<img src='blue.png'>";
+					if (winner(lineCPU,colCPU)==2) alert("I am winner");
+					else{
+						if (equals(lineCPU,colCPU)==true) alert("Egalité");
+					}
+				}	
+			}
+		}
+		function CPU(){
+			return Math.floor(Math.random()*7);
+		}
+		function getLine(c){
+			var pos=-1;
+			i=6;
+			do{
+				i--;
+			}while(T[i][c]!=0)
+			return i;
+		}
+		function winner(l,c){
+			var win = 0;
+			if (winnerLine(1,l)==1 || winnerCol(1,c)==1 || winnerDiag1(1,l,c)==1 || winnerDiag2(1,l,c)==1) win=1;
+			else{
+				if (winnerLine(2,l)==2 || winnerCol(2,c)==2 || winnerDiag1(2,l,c)==2 || winnerDiag2(2,l,c)==2) win=2;
+				else win =0;
+			}
+			return win;
+		}
+
+		function winnerLine(g,l){
+			var y = 0; var win=0;
+			for(var i=0;i<7;i++){
+				if(T[l][i]==g){ y++; if (y==4) win = g;}
+				else y=0;
+			}
+			return win;
+		}
+
+		function winnerCol(g,c){
+			var y=0;var win=0;
+			for(var i=0;i<6;i++){
+				if(T[i][c]==g){y++; if(y==4) win=g;}
+				else y=0;
+			}
+			return win;
+		}
+
+		function winnerDiag1(g,line,col){
+			var win=0;var y=0;
+			var l=line,c=col;
+			while(l!=5 && c!=0){l++;c--;}
+			while(l!=-1 && c!=7){
+				if(T[l][c]==g){y++; if (y==4) win=g;}
+				else y=0;
+			l--;c++; 
+			}
+			return win;
+		}
+		function winnerDiag2(g,line,col){
+			var win=0; var y=0;
+			var l=line,c=col;
+			while(c!=0 && l!=0){l--;c--;}
+			while(c!=7 && l!=6){
+				if (T[l][c]==g) {y++; if (y==4) win=g;}
+				else y=0;
+				l++;c++;
+			}
+			return win;
+		}
+
+		function equals(l,c){
+			b=false;
+			if (full()==true && winner(l,c)==0) b=true;
+			return b;
+		}
+		function full(){
+			b=true;
+			for(var i = 0;i<6;i++){
+				for(var j = 0;j<7;j++) if (T[i][j]==0) b=false;
+			}
+		return b;
+		}
+
+	</script>
+</head>
+<body onload="initialize()">
+	<div id="id1"></div>
+</body>
+</html>
